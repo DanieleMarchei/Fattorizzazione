@@ -9,11 +9,6 @@ Una piccola libreria di algoritmi di fattorizzazione e di strumenti matematici. 
 - Crivello quadratico **TODO**
 - Crivello dei campi di numeri generale **TODO**
 
-### Strumenti matematici
-- Discrete Logarithm (baby-steps giant-steps)
-- Is Perfect Square
-- Get Nth Power
-
 ### Idee
 - Probabile aggiunta di benchmark per confrontare i vari algoritmi
 
