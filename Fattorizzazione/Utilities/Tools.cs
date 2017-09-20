@@ -47,19 +47,6 @@ namespace Fattorizzazione.Utilities
             return 0;
         }
 
-        public static ulong DoubleGCD(double a, double b)
-        {
-            while (a != 0 && b != 0)
-            {
-                if (a > b)
-                    a %= b;
-                else
-                    b %= a;
-            }
-
-            return a == 0 ? (ulong)b : (ulong)a;
-        }
-
         public static bool IsPerfectSquare(ulong n)
         {
             ulong sqrt = (ulong)Math.Ceiling(Math.Sqrt(n));
