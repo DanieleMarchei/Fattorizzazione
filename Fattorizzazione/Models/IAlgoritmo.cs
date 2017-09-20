@@ -9,5 +9,7 @@ namespace Fattorizzazione.Models
     interface IAlgoritmo
     {
         List<ulong> Fattorizza(ulong n);
+
+        string NomeAlgoritmo();
     }
 }

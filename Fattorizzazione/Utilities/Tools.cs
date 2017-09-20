@@ -66,5 +66,42 @@ namespace Fattorizzazione.Utilities
             }
             return 1;
         }
+
+        public static ulong Fattoriale(ulong n)
+        {
+            if (n == 1 || n == 0) return 1;
+            else return n * Fattoriale(n - 1);
+        }
+
+        public static ulong GCD(ulong a,ulong b)
+        {
+            return (ulong)new BigInteger(a).gcd(new BigInteger(b)).LongValue();
+        }
+
+        public static ulong LCM(ulong a, ulong b)
+        {
+            ulong ab = a * b;
+            ulong gdc = GCD(a,b);
+            return (a * b) / gdc;
+        }
+
+        public static ulong LCM(params ulong[] a)
+        {
+            ulong lcm = 0;
+            int i = 0;
+            while(i < a.Length)
+            {
+                if (lcm == 0)
+                {
+                    lcm = LCM(a[i], a[i+1]);
+                    i++;
+                }   
+                else
+                    lcm = LCM(lcm, a[i]);
+                i++;
+            }
+
+            return lcm;
+        }
     }
 }

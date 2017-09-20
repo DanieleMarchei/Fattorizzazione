@@ -45,12 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\MetodoACurveEllittiche.cs" />
     <Compile Include="Models\IAlgoritmo.cs" />
     <Compile Include="Models\CrivelloDiEratostene.cs" />
     <Compile Include="Models\MetodoDiFermat.cs" />
     <Compile Include="Models\Shor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CurvaEllittica.cs" />
+    <Compile Include="Utilities\Punto.cs" />
     <Compile Include="Utilities\Tools.cs" />
     <Compile Include="Utilities\Utility.cs" />
   </ItemGroup>

@@ -62,6 +62,9 @@ namespace Fattorizzazione.Models
             return fattori;
         }
 
-        
+        public string NomeAlgoritmo()
+        {
+            return "Algoritmo di Shor";
+        }
     }
 }

@@ -39,6 +39,9 @@ namespace Fattorizzazione.Models
             return fattori;
         }
 
-        
+        public string NomeAlgoritmo()
+        {
+            return "Metodo di Fermat";
+        }
     }
 }

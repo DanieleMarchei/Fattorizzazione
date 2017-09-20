@@ -22,5 +22,10 @@ namespace Fattorizzazione.Models
             }
             return fattori;
         }
+
+        public string NomeAlgoritmo()
+        {
+            return "Crivello di Eratostene";
+        }
     }
 }

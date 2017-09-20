@@ -12,9 +12,9 @@ namespace Fattorizzazione
     {
         static void Main(string[] args)
         {
-            Shor algo = new Shor();
-            List<ulong> fattori = algo.Fattorizza(7 * 7 * 7 * 7 * 7);
-            Utility.StampaASchermo(fattori, "*");
+            IAlgoritmo algo = new MetodoACurveEllittiche();
+            List<ulong> fattori = algo.Fattorizza(200016485312);
+            Utility.StampaASchermo(fattori);
 
             Console.Read();
         }
