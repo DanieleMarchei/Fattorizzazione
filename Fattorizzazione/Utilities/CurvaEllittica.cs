@@ -8,11 +8,11 @@ namespace Fattorizzazione.Utilities
 {
     public class CurvaEllittica
     {
-        public uint A { get; private set; }
-        public uint B { get; private set; }
+        public ulong A { get; private set; }
+        public ulong B { get; private set; }
         public ulong N { get; private set; }
 
-        public CurvaEllittica(uint a, uint b, ulong N)
+        public CurvaEllittica(ulong a, ulong b, ulong N)
         {
             A = a;
             B = b;
@@ -34,7 +34,7 @@ namespace Fattorizzazione.Utilities
             ulong lambda = 0; ;
             if(p == q)
             {
-                lambdaNum = 3 * p.X * p.X + (ulong)A;
+                lambdaNum = 3 * p.X * p.X + A;
                 lambdaDenom = 2 * p.Y;
             }
             else
@@ -43,8 +43,7 @@ namespace Fattorizzazione.Utilities
                 lambdaDenom = p.X - q.X;
             }
 
-            BigInteger big_denom = new BigInteger(lambdaDenom);
-            ulong inverseDenom = (ulong)big_denom.modInverse(N).LongValue();
+            ulong inverseDenom = Tools.ModInverse(lambdaDenom, N);
             lambda = (lambdaNum * inverseDenom) % N;
             long Xr = ((long)lambda * (long)lambda - (long)p.X - (long)q.X) % (long)N;
             if (Xr < 0) Xr = (long)N + Xr;

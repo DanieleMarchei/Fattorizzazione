@@ -13,9 +13,8 @@ namespace Fattorizzazione
         static void Main(string[] args)
         {
             IAlgoritmo algo = new MetodoACurveEllittiche();
-            List<ulong> fattori = algo.Fattorizza(200016485312);
+            List<ulong> fattori = algo.Fattorizza(6512468135138454);
             Utility.StampaASchermo(fattori);
-
             Console.Read();
         }
     }

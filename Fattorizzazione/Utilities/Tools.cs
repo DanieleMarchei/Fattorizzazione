@@ -57,7 +57,7 @@ namespace Fattorizzazione.Utilities
         {
             double result = 3;
             ulong power = 1;
-            while(result >= 2)
+            while (result >= 2)
             {
                 power++;
                 result = Math.Pow(n, 1.0 / power);
@@ -73,35 +73,69 @@ namespace Fattorizzazione.Utilities
             else return n * Fattoriale(n - 1);
         }
 
-        public static ulong GCD(ulong a,ulong b)
+        public static ulong GCD(ulong a, ulong b)
         {
             return (ulong)new BigInteger(a).gcd(new BigInteger(b)).LongValue();
         }
 
-        public static ulong LCM(ulong a, ulong b)
-        {
-            ulong ab = a * b;
-            ulong gdc = GCD(a,b);
-            return (a * b) / gdc;
-        }
+        //public static ulong LCM(ulong a, ulong b)
+        //{
+        //    ulong ab = a * b;
+        //    ulong gdc = GCD(a, b);
+        //    return (a * b) / gdc;
+        //}
 
-        public static ulong LCM(params ulong[] a)
+        //public static ulong LCM(params ulong[] a)
+        //{
+        //    ulong lcm = 0;
+        //    int i = 0;
+        //    while (i < a.Length)
+        //    {
+        //        if (lcm == 0)
+        //        {
+        //            lcm = LCM(a[i], a[i + 1]);
+        //            i++;
+        //        }
+        //        else
+        //            lcm = LCM(lcm, a[i]);
+        //        i++;
+        //    }
+
+        //    return lcm;
+        //}
+
+        public static List<ulong> ListaNumeriPrimi(ulong B)
         {
-            ulong lcm = 0;
-            int i = 0;
-            while(i < a.Length)
+            List<ulong> risultato = new List<ulong>();
+
+            for (ulong i = 2; i <= B; i++)
             {
-                if (lcm == 0)
-                {
-                    lcm = LCM(a[i], a[i+1]);
-                    i++;
-                }   
-                else
-                    lcm = LCM(lcm, a[i]);
-                i++;
+                risultato.Add(i);
             }
 
-            return lcm;
+            ulong sqrtB = (ulong)Math.Sqrt(B);
+
+            for (ulong i = 2; i <= sqrtB; i++)
+            {
+                risultato.RemoveAll(u => u % i == 0 && u != i);
+            }
+
+            return risultato;
+        }
+
+        public static ulong RandomULong(ulong min, ulong max)
+        {
+            Random rand = new Random();
+            byte[] buf = new byte[8];
+            rand.NextBytes(buf);
+            ulong longRand = (ulong)BitConverter.ToInt64(buf, 0);
+
+            return longRand % (max - min) + min;
+        }
+
+        public static ulong ModInverse(ulong a, ulong n)
+        {
+            return (ulong)(new BigInteger(a).modInverse(new BigInteger(n)).LongValue());
         }
     }
 }
