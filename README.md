@@ -14,7 +14,7 @@ new MetodoDiFermat();
 ```cs 
 new Shor();
 ```
-- Fattorizzazione per curve ellittiche **TODO**
+- Fattorizzazione per curve ellittiche
 ```cs 
 new MetodoACurveEllittiche();
 ```
