@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Fattorizzazione.Models;
 
 namespace Fattorizzazione.Utilities
 {
@@ -78,32 +79,6 @@ namespace Fattorizzazione.Utilities
             return (ulong)new BigInteger(a).gcd(new BigInteger(b)).LongValue();
         }
 
-        //public static ulong LCM(ulong a, ulong b)
-        //{
-        //    ulong ab = a * b;
-        //    ulong gdc = GCD(a, b);
-        //    return (a * b) / gdc;
-        //}
-
-        //public static ulong LCM(params ulong[] a)
-        //{
-        //    ulong lcm = 0;
-        //    int i = 0;
-        //    while (i < a.Length)
-        //    {
-        //        if (lcm == 0)
-        //        {
-        //            lcm = LCM(a[i], a[i + 1]);
-        //            i++;
-        //        }
-        //        else
-        //            lcm = LCM(lcm, a[i]);
-        //        i++;
-        //    }
-
-        //    return lcm;
-        //}
-
         public static List<ulong> ListaNumeriPrimi(ulong B)
         {
             List<ulong> risultato = new List<ulong>();
@@ -136,6 +111,53 @@ namespace Fattorizzazione.Utilities
         public static ulong ModInverse(ulong a, ulong n)
         {
             return (ulong)(new BigInteger(a).modInverse(new BigInteger(n)).LongValue());
+        }
+
+        public static int Legendre(ulong a, ulong p)
+        {
+            if (p < 2)
+                throw new ArgumentOutOfRangeException("p", "p deve essere >= 2");
+            if (a == 0)
+            {
+                return 0;
+            }
+            if (a == 1)
+            {
+                return 1;
+            }
+            int result;
+            if (a % 2 == 0)
+            {
+                result = Legendre(a / 2, p);
+                if (((p * p - 1) & 8) != 0)
+                {
+                    result = -result;
+                }
+            }
+            else
+            {
+                result = Legendre(p % a, a);
+                if (((a - 1) * (p - 1) & 4) != 0)
+                {
+                    result = -result;
+                }
+            }
+            return result;
+        }
+
+        public static bool IsBSmooth(ulong n, ulong b)
+        {
+            IAlgoritmo algo = new CrivelloDiEratostene();
+            List<ulong> primi = algo.Fattorizza(n);
+            ulong maxP = primi.Max();
+            return maxP <= b;
+        }
+
+        public static List<int> FiltraLista(List<int> a, List<int> z)
+        {
+            List<int> result = a.Zip(z, (i, j) => i * j).ToList();
+            result.RemoveAll(i => i == 0);
+            return result;
         }
     }
 }
