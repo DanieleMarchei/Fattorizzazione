@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\CrivelloQuadratico.cs" />
     <Compile Include="Models\MetodoACurveEllittiche.cs" />
     <Compile Include="Models\IAlgoritmo.cs" />
     <Compile Include="Models\CrivelloDiEratostene.cs" />

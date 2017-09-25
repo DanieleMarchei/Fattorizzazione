@@ -6,15 +6,15 @@ namespace Fattorizzazione.Models
 {
     public class Shor : IAlgoritmo
     {
-        public List<ulong> Fattorizza(ulong n)
+        public List<long> Fattorizza(long n)
         {
-            List<ulong> fattori = new List<ulong>();
+            List<long> fattori = new List<long>();
 
-            ulong power = Tools.GetPower(n);
+            long power = Tools.GetPower(n);
             if (power > 1)
             {
-                ulong factor = (ulong)Math.Round(Math.Pow(n, 1.0/power));
-                for(ulong i = 0; i < power; i++)
+                long factor = (long)Math.Round(Math.Pow(n, 1.0/power));
+                for(long i = 0; i < power; i++)
                 {
                     fattori.AddRange(Fattorizza(factor));
                 }
@@ -23,13 +23,13 @@ namespace Fattorizzazione.Models
 
             Random rand = new Random();
 
-            ulong a, r;
-            ulong pow = 0;
+            long a, r;
+            long pow = 0;
             bool exit = false;
 
             do
             {
-                a = (ulong)(rand.NextDouble() * (n-2))+2;
+                a = (long)(rand.NextDouble() * (n-2))+2;
                 if (new BigInteger(a).gcd(n) != 1) continue;
 
                 r = Tools.DiscreteLog(a, 1, n);
@@ -37,15 +37,15 @@ namespace Fattorizzazione.Models
                 exit = r % 2 == 0;
                 if(exit)
                 {
-                    pow = (ulong)new BigInteger(a).modPow(r / 2, n).LongValue();
+                    pow = (long)new BigInteger(a).modPow(r / 2, n).LongValue();
                     exit &= (pow + 1) % n != 0;
                 }
                 
             } while (!exit);
 
             BigInteger big_n = new BigInteger(n);
-            ulong p = (ulong)new BigInteger(pow - 1).gcd(big_n).LongValue();
-            ulong q = n / p;
+            long p = (long)new BigInteger(pow - 1).gcd(big_n).LongValue();
+            long q = n / p;
 
             if (p <= 1 || q <= 1)
                 fattori.Add(n);

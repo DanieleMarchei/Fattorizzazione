@@ -8,10 +8,15 @@ namespace Fattorizzazione.Models
 {
     public class CrivelloDiEratostene : IAlgoritmo
     {
-        public List<ulong> Fattorizza(ulong n)
+        public List<long> Fattorizza(long n)
         {
-            List<ulong> fattori = new List<ulong>();
-            for(ulong i = 2; i <= n; i++)
+            List<long> fattori = new List<long>();
+            if(n < 0)
+            {
+                fattori.Add(-1);
+                n = -n;
+            }
+            for(long i = 2; i <= n; i++)
             {
                 if(n % i == 0)
                 {

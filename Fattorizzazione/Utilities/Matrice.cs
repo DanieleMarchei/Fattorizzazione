@@ -31,16 +31,47 @@ namespace Fattorizzazione.Utilities
             }
         }
 
-        public BMatrice Riduci()
+        public void RimuoviDoppioni()
         {
-            ISet<int> righeMarcate = new HashSet<int>();
+            List<List<int>> list_list = new List<List<int>>();
+            for (int r = 0; r < Righe; r++)
+            {
+                List<int> toAdd = new List<int>();
+                for (int c = 0; c < Colonne; c++)
+                {
+                    toAdd.Add(this[c, r]);
+                }
+                list_list.Add(toAdd);
+            }
+
+            list_list = list_list.Where((xs, n) =>
+            !list_list
+                    .Skip(n + 1)
+                    .Any(ys => xs.SequenceEqual(ys)))
+            .ToList();
+
+            Righe = list_list.Count;
+            Valori = new int[Colonne, Righe];
+            for (int r = 0; r < Righe; r++)
+            {
+                for (int c = 0; c < Colonne; c++)
+                {
+                    this[c, r] = list_list[r][c];
+                }
+            }
+
+        }
+
+        public void Riduci()
+        {
+            //RimuoviDoppioni();
             int rigaCon1;
             for (int j = 0; j < Colonne; j++)
             {
                 rigaCon1 = -1;
                 for (int i = 0; i < Righe; i++)
                 {
-                    if(this[j, i] == 1)
+                    if (this[j, i] == 1)
                     {
                         rigaCon1 = i;
                         break;
@@ -49,13 +80,12 @@ namespace Fattorizzazione.Utilities
 
                 if (rigaCon1 != -1)
                 {
-                    righeMarcate.Add(rigaCon1);
                     List<int> colonneCon1 = new List<int>();
                     for (int i = 0; i < Colonne; i++)
                     {
-                        if(i != j)
+                        if (i != j)
                         {
-                            if(this[i, rigaCon1] == 1)
+                            if (this[i, rigaCon1] == 1)
                             {
                                 colonneCon1.Add(i);
                             }
@@ -72,13 +102,14 @@ namespace Fattorizzazione.Utilities
 
                 }
 
+
             }
-            return this;
 
         }
 
         public int[] RigheDipendenti()
         {
+            //RimuoviDoppioni();
             ISet<int> risultato = new HashSet<int>();
 
             int primaDipendente = -1;
@@ -86,9 +117,9 @@ namespace Fattorizzazione.Utilities
             {
                 for (int j = 0; j < Righe; j++)
                 {
-                    if(primaDipendente != -1)
+                    if (primaDipendente != -1)
                     {
-                        if(this[i,j] == 1)
+                        if (this[i, j] == 1)
                         {
                             risultato.Add(primaDipendente);
                             risultato.Add(j);
@@ -96,7 +127,7 @@ namespace Fattorizzazione.Utilities
                     }
                     else
                     {
-                        if(this[i, j] == 1)
+                        if (this[i, j] == 1)
                             primaDipendente = j;
                     }
                 }
@@ -108,6 +139,7 @@ namespace Fattorizzazione.Utilities
 
         public override string ToString()
         {
+            //RimuoviDoppioni();
             string s = "";
             for (int i = 0; i < Righe; i++)
             {

@@ -2,10 +2,10 @@
 {
     public class Punto
     {
-        public ulong X { get; private set; }
-        public ulong Y { get; private set; }
+        public long X { get; private set; }
+        public long Y { get; private set; }
 
-        public Punto(ulong x, ulong y)
+        public Punto(long x, long y)
         {
             X = x;
             Y = y;

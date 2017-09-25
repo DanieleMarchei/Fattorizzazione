@@ -9,42 +9,42 @@ namespace Fattorizzazione.Models
 {
     class MetodoACurveEllittiche : IAlgoritmo
     {
-        public List<ulong> Fattorizza(ulong n)
+        public List<long> Fattorizza(long n)
         {
-            List<ulong> fattori = new List<ulong>();
+            List<long> fattori = new List<long>();
 
-            ulong power = Tools.GetPower(n);
+            long power = Tools.GetPower(n);
             if (power > 1)
             {
-                ulong factor = (ulong)Math.Round(Math.Pow(n, 1.0 / power));
-                for (ulong i = 0; i < power; i++)
+                long factor = (long)Math.Round(Math.Pow(n, 1.0 / power));
+                for (long i = 0; i < power; i++)
                 {
                     fattori.AddRange(Fattorizza(factor));
                 }
                 return fattori;
             }
 
-            ulong bound = 1000000;
+            long bound = 1000000;
             double logBound = Math.Log(bound) / Math.Log(2);
-            ulong k = 1;
-            List<ulong> primi = Tools.ListaNumeriPrimi(bound);
+            long k = 1;
+            List<long> primi = Tools.ListaNumeriPrimi(bound);
             double logP = 0, exponent = 0;
-            foreach (ulong primo in primi)
+            foreach (long primo in primi)
             {
                 logP = Math.Log(primo) / Math.Log(2);
-                exponent = (ulong)Math.Floor(logBound / logP);
-                k *= (ulong)Math.Pow(primo, exponent);
+                exponent = (long)Math.Floor(logBound / logP);
+                k *= (long)Math.Pow(primo, exponent);
             }
 
-            ulong A = 0, x = 0, y = 0, B = 0;
-            ulong singulatity;
+            long A = 0, x = 0, y = 0, B = 0;
+            long singulatity;
 
-            ulong gcd = 1;
+            long gcd = 1;
             while(gcd == 1)
             {
-                A = Tools.RandomULong(0, n);
-                x = Tools.RandomULong(0, n);
-                y = Tools.RandomULong(0, n);
+                A = Tools.Randomlong(0, n);
+                x = Tools.Randomlong(0, n);
+                y = Tools.Randomlong(0, n);
 
                 B = y * y - x * x * x - A * x;
 
@@ -57,7 +57,7 @@ namespace Fattorizzazione.Models
             Punto startP = new Punto(x, y);
             Punto p = new Punto(x, y);
 
-            for(ulong i = 0; i < k; i++)
+            for(long i = 0; i < k; i++)
             {
                 try
                 {
@@ -65,7 +65,7 @@ namespace Fattorizzazione.Models
                 }
                 catch (Exception)
                 {
-                    ulong denom = 0;
+                    long denom = 0;
                     if (p == startP)
                     {
                         denom = (2 * p.Y) % n;
@@ -74,8 +74,8 @@ namespace Fattorizzazione.Models
                     {
                         denom = (p.X - startP.X) % n;
                     }
-                    ulong fattore1 = Tools.GCD(denom, n);
-                    ulong fattore2 = n / fattore1;
+                    long fattore1 = Tools.GCD(denom, n);
+                    long fattore2 = n / fattore1;
                     if(fattore1 == 1 || fattore2 == 1)
                         fattori.Add(n);
                     else

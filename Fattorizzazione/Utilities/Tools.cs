@@ -9,35 +9,35 @@ namespace Fattorizzazione.Utilities
 {
     public class Tools
     {
-        public static ulong DiscreteLog(ulong g, ulong h, ulong n)
+        public static long DiscreteLog(long g, long h, long n)
         {
             BigInteger big_n = new BigInteger(n);
             BigInteger big_g = new BigInteger(g);
             BigInteger big_h = new BigInteger(h);
             BigInteger m = big_n.sqrt() + 1;
 
-            Dictionary<ulong, ulong> table = new Dictionary<ulong, ulong>();
+            Dictionary<long, long> table = new Dictionary<long, long>();
 
-            ulong temp = 0;
+            long temp = 0;
 
-            for (ulong i = 0; i <= m; i++)
+            for (long i = 0; i <= m; i++)
             {
-                temp = (ulong)new BigInteger(g).modPow(new BigInteger(i), new BigInteger(n)).LongValue();
+                temp = (long)new BigInteger(g).modPow(new BigInteger(i), new BigInteger(n)).LongValue();
                 if (!table.ContainsKey(temp))
                     table.Add(temp, i);
             }
             BigInteger inverse = big_g.modInverse(n).LongValue();
             BigInteger inverse2 = inverse.modPow(m, n);
 
-            ulong hg = new ulong();
-            for (ulong i = 0; i <= m; i++)
+            long hg = 0;
+            for (long i = 0; i <= m; i++)
             {
-                hg = (ulong)((big_h * inverse2.modPow(new BigInteger(i), n)) % n).LongValue();
+                hg = ((big_h * inverse2.modPow(new BigInteger(i), n)) % n).LongValue();
                 try
                 {
-                    ulong any = table[hg];
+                    long any = table[hg];
                     if ((i * m + any) != 0)
-                        return i * (ulong)m.LongValue() + any;
+                        return i * m.LongValue() + any;
                 }
                 catch (KeyNotFoundException e)
                 {
@@ -48,16 +48,16 @@ namespace Fattorizzazione.Utilities
             return 0;
         }
 
-        public static bool IsPerfectSquare(ulong n)
+        public static bool IsPerfectSquare(long n)
         {
-            ulong sqrt = (ulong)Math.Ceiling(Math.Sqrt(n));
+            long sqrt = (long)Math.Ceiling(Math.Sqrt(n));
             return sqrt * sqrt == n;
         }
 
-        public static ulong GetPower(ulong n)
+        public static long GetPower(long n)
         {
             double result = 3;
-            ulong power = 1;
+            long power = 1;
             while (result >= 2)
             {
                 power++;
@@ -68,29 +68,30 @@ namespace Fattorizzazione.Utilities
             return 1;
         }
 
-        public static ulong Fattoriale(ulong n)
+        public static long Fattoriale(long n)
         {
             if (n == 1 || n == 0) return 1;
             else return n * Fattoriale(n - 1);
         }
 
-        public static ulong GCD(ulong a, ulong b)
+        public static long GCD(long a, long b)
         {
-            return (ulong)new BigInteger(a).gcd(new BigInteger(b)).LongValue();
+            return new BigInteger(a).gcd(new BigInteger(b)).LongValue();
         }
 
-        public static List<ulong> ListaNumeriPrimi(ulong B)
+        public static List<long> ListaNumeriPrimi(long B)
         {
-            List<ulong> risultato = new List<ulong>();
+            List<long> risultato = new List<long>();
+            risultato.Add(2);
 
-            for (ulong i = 2; i <= B; i++)
+            for (long i = 3; i <= B; i += 2)
             {
                 risultato.Add(i);
             }
 
-            ulong sqrtB = (ulong)Math.Sqrt(B);
+            long sqrtB = (long)Math.Sqrt(B);
 
-            for (ulong i = 2; i <= sqrtB; i++)
+            for (long i = 2; i <= sqrtB; i++)
             {
                 risultato.RemoveAll(u => u % i == 0 && u != i);
             }
@@ -98,25 +99,27 @@ namespace Fattorizzazione.Utilities
             return risultato;
         }
 
-        public static ulong RandomULong(ulong min, ulong max)
+        public static long Randomlong(long min, long max)
         {
             Random rand = new Random();
             byte[] buf = new byte[8];
             rand.NextBytes(buf);
-            ulong longRand = (ulong)BitConverter.ToInt64(buf, 0);
+            long longRand = BitConverter.ToInt64(buf, 0);
 
             return longRand % (max - min) + min;
         }
 
-        public static ulong ModInverse(ulong a, ulong n)
+        public static long ModInverse(long a, long n)
         {
-            return (ulong)(new BigInteger(a).modInverse(new BigInteger(n)).LongValue());
+            return new BigInteger(a).modInverse(new BigInteger(n)).LongValue();
         }
 
-        public static int Legendre(ulong a, ulong p)
+        public static int Legendre(long a, long p)
         {
-            if (p < 2)
-                throw new ArgumentOutOfRangeException("p", "p deve essere >= 2");
+
+            if (p < 2)  // prime test is expensive.
+                throw new ArgumentOutOfRangeException("p", "p must not be < 2");
+
             if (a == 0)
             {
                 return 0;
@@ -129,7 +132,7 @@ namespace Fattorizzazione.Utilities
             if (a % 2 == 0)
             {
                 result = Legendre(a / 2, p);
-                if (((p * p - 1) & 8) != 0)
+                if (((p * p - 1) & 8) != 0) // instead of dividing by 8, shift the mask bit
                 {
                     result = -result;
                 }
@@ -137,7 +140,7 @@ namespace Fattorizzazione.Utilities
             else
             {
                 result = Legendre(p % a, a);
-                if (((a - 1) * (p - 1) & 4) != 0)
+                if (((a - 1) * (p - 1) & 4) != 0) // instead of dividing by 4, shift the mask bit
                 {
                     result = -result;
                 }
@@ -145,11 +148,19 @@ namespace Fattorizzazione.Utilities
             return result;
         }
 
-        public static bool IsBSmooth(ulong n, ulong b)
+        public static bool IsBSmooth(long n, long b)
         {
             IAlgoritmo algo = new CrivelloDiEratostene();
-            List<ulong> primi = algo.Fattorizza(n);
-            ulong maxP = primi.Max();
+            List<long> primi = algo.Fattorizza(n);
+            long maxP = primi.Max();
+            return maxP <= b;
+        }
+
+        public static bool IsBSmooth(long n, long b, out List<long> fattori)
+        {
+            IAlgoritmo algo = new CrivelloDiEratostene();
+            fattori = algo.Fattorizza(n);
+            long maxP = fattori.Max();
             return maxP <= b;
         }
 
@@ -158,6 +169,38 @@ namespace Fattorizzazione.Utilities
             List<int> result = a.Zip(z, (i, j) => i * j).ToList();
             result.RemoveAll(i => i == 0);
             return result;
+        }
+
+        public static List<long> ResuduiQuadratici(long n, long p)
+        {
+            List<long> residui = new List<long>();
+
+            long n_modp = n % p;
+            long x_sqr = 0;
+            for (long x = 1; x < p; x++)
+            {
+                x_sqr = (x * x) % p;
+                if (x_sqr == n_modp)
+                {
+                    residui.Add(x);
+                }
+            }
+
+            return residui;
+        }
+
+        public static List<long> VettoreEsponentiModN(List<long> fattori, long n)
+        {
+            List<long> risultato = new List<long>();
+            List<long> distinct = fattori.Distinct().ToList();
+
+            foreach (long fatt in distinct)
+            {
+                if (fattori.Where(k => k == fatt).Count() % n != 0)
+                    risultato.Add(fatt);
+            }
+
+            return risultato;
         }
     }
 }

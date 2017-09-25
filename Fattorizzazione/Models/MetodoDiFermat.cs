@@ -9,25 +9,25 @@ namespace Fattorizzazione.Models
 {
     public class MetodoDiFermat : IAlgoritmo
     {
-        public List<ulong> Fattorizza(ulong n)
+        public List<long> Fattorizza(long n)
         {
             
-            List<ulong> fattori = new List<ulong>();
+            List<long> fattori = new List<long>();
             while (n % 2 == 0)
             {
                 n = n / 2;
                 fattori.Add(2);
             }
 
-            ulong a = (ulong)Math.Ceiling(Math.Sqrt(n));
-            ulong b_sq = a * a - n;
+            long a = (long)Math.Ceiling(Math.Sqrt(n));
+            long b_sq = a * a - n;
             while (!Tools.IsPerfectSquare(b_sq))
             {
                 a++;
                 b_sq = a * a - n;
             }
 
-            ulong b = (ulong)Math.Ceiling(Math.Sqrt(b_sq));
+            long b = (long)Math.Ceiling(Math.Sqrt(b_sq));
             if((a - b) != 1)
                 fattori.AddRange(Fattorizza(a - b));
 
