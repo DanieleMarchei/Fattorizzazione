@@ -18,5 +18,16 @@ namespace Fattorizzazione.Utilities
                     Console.Write(lista[i]);
             }
         }
+
+        public static void StampaASchermo<T>(T[] lista, string separator = " ")
+        {
+            for (int i = 0; i < lista.Length; i++)
+            {
+                if (i < lista.Length - 1)
+                    Console.Write(lista[i] + separator);
+                else
+                    Console.Write(lista[i]);
+            }
+        }
     }
 }

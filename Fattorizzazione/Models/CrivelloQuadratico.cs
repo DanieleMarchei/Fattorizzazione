@@ -41,7 +41,7 @@ namespace Fattorizzazione.Models
             long sqrtN = (long)Math.Ceiling(Math.Sqrt(n));
 
             List<long> primi = Tools.ListaNumeriPrimi(B);
-            List<long> vectorBase = primi.Where(p => Tools.Legendre(n, p) == 1).ToList();
+            List<long> vectorBase = primi.Where(p => Tools.Legendre(n, p) == 1 && p != 2).ToList();
 
             vectorBase.Add(2);
 
@@ -61,8 +61,8 @@ namespace Fattorizzazione.Models
                     t = new Triple()
                     {
                         X = x,
-                        XX_sqrt = val,
-                        Factors = Tools.VettoreEsponentiModN(temp, 2)
+                        XX_N = val,
+                        Factors = temp
                     };
                     
                     triple.Add(t);
@@ -70,14 +70,16 @@ namespace Fattorizzazione.Models
                 i++;
             }
 
-            BMatrice matrice = new BMatrice(vectorBase.Count, triple.Count);
+            BMatrice matrice = new BMatrice(triple.Count, vectorBase.Count);
 
+            vectorBase.Sort();
             int c = 0, r = 0;
 
-            foreach (Triple tr in triple)
+            foreach (long p in vectorBase)
             {
-                foreach (long p in vectorBase)
+                foreach (Triple tr in triple)
                 {
+                    tr.Factors = Tools.VettoreEsponentiModN(tr.Factors, 2);
                     if (tr.Factors.Contains(p))
                         matrice[c, r] = 1;
                     c++;
@@ -86,28 +88,22 @@ namespace Fattorizzazione.Models
                 r++;
             }
 
-            Console.WriteLine(matrice);
-
-            matrice.Riduci();
-
-            Console.WriteLine("-------------------");
-            Console.WriteLine(matrice);
-            int[] v = matrice.RigheDipendenti();
-
-
+            List<int[]> kernel = matrice.Kernel();
+            int[] v = kernel[0];
+            List<Triple> tripleScelte = triple.Zip(v, (tr, k) => k == 1 ? tr : null).ToList();
+            tripleScelte.RemoveAll(tr => tr == null);
             long X = 1, Y = 1;
-            foreach (int riga in v)
+            foreach (Triple tr in tripleScelte)
             {
-                t = triple[riga];
-                X *= t.X;
-                Y *= t.XX_sqrt;
+                X *= tr.X;
+                Y *= tr.XX_N;
             }
 
             X = X % n;
 
             Y = (long)Math.Round(Math.Sqrt(Y)) % n;
 
-            long fatt1 = Tools.GCD(X - Y, n);
+            long fatt1 = Tools.GCD(X + Y, n);
             long fatt2 = n / fatt1;
 
             if (fatt1 <= 1 || fatt2 <= 1)
@@ -129,7 +125,7 @@ namespace Fattorizzazione.Models
         private class Triple
         {
             public long X { get; set; }
-            public long XX_sqrt { get; set; }
+            public long XX_N { get; set; }
             public List<long> Factors { get; set; }
         }
     }
