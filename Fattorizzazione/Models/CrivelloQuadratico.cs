@@ -78,7 +78,7 @@ namespace Fattorizzazione.Models
             foreach (long p in vectorBase)
             {
                 foreach (Triple tr in triple)
-                {
+                {                    
                     tr.Factors = Tools.VettoreEsponentiModN(tr.Factors, 2);
                     if (tr.Factors.Contains(p))
                         matrice[c, r] = 1;
@@ -88,20 +88,27 @@ namespace Fattorizzazione.Models
                 r++;
             }
 
-            List<int[]> kernel = matrice.Kernel();
-            int[] v = kernel[0];
-            List<Triple> tripleScelte = triple.Zip(v, (tr, k) => k == 1 ? tr : null).ToList();
-            tripleScelte.RemoveAll(tr => tr == null);
+            matrice.EliminazioneGaussiana();
+
             long X = 1, Y = 1;
-            foreach (Triple tr in tripleScelte)
+            while(X == Y)
             {
-                X *= tr.X;
-                Y *= tr.XX_N;
+                int[] v = matrice.SoluzioneRandom();
+
+                List<Triple> tripleScelte = triple.Zip(v, (tr, k) => k == 1 ? tr : null).ToList();
+                tripleScelte.RemoveAll(tr => tr == null);
+
+                foreach (Triple tr in tripleScelte)
+                {
+                    X *= tr.X;
+                    Y *= tr.XX_N;
+                }
+
+                X = X % n;
+
+                Y = (long)Math.Round(Math.Sqrt(Y)) % n;
             }
-
-            X = X % n;
-
-            Y = (long)Math.Round(Math.Sqrt(Y)) % n;
+            
 
             long fatt1 = Tools.GCD(X + Y, n);
             long fatt2 = n / fatt1;

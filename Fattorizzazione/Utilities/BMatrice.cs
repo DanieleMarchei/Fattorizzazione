@@ -64,7 +64,7 @@ namespace Fattorizzazione.Utilities
         {
             for (int c = 0; c < Colonne; c++)
             {
-                this[c, r2] += this[c, r1]; 
+                this[c, r2] += this[c, r1];
             }
         }
 
@@ -79,7 +79,7 @@ namespace Fattorizzazione.Utilities
                         righeCon1.Add(r);
                 }
 
-                if(righeCon1.Count > 0)
+                if (righeCon1.Count > 0)
                 {
                     int prima = c;
                     ScambiaRighe(righeCon1[0], c);
@@ -89,64 +89,105 @@ namespace Fattorizzazione.Utilities
                         SommaRighe(prima, riga);
                     }
                 }
-
-                
             }
         }
 
-        public List<int[]> Kernel()
+        public int[] SoluzioneRandom()
         {
-            //EliminazioneGaussiana();
-            BMatrice mat = new BMatrice(this);
-            Valori = new int[Colonne, Righe + Colonne];
+            int[] risultato = new int[Colonne];
+            for (int i = 0; i < risultato.Length; i++)
+            {
+                risultato[i] = -1;
+            }
+
+            #region rimuovi_righe_vuote
+
+            List<int> righeVuote = new List<int>();
             for (int r = 0; r < Righe; r++)
             {
+                bool vuota = true;
                 for (int c = 0; c < Colonne; c++)
                 {
-                    this[c, r] = mat[c, r];
+                    vuota &= this[c, r] == 0;
                 }
+
+                if (vuota)
+                    righeVuote.Add(r);
             }
 
-            for (int r = Righe, c = 0; c < Colonne; r++, c++)
+            BMatrice mat = new BMatrice(Colonne, Righe - righeVuote.Count);
+            List<int> righePiene = Enumerable.Range(0, Righe).ToList();
+            righePiene.RemoveAll(r => righeVuote.Contains(r));
+            #endregion
+
+            List<List<int>> righe = new List<List<int>>();
+            for (int r = 0; r < mat.Righe; r++)
             {
-                this[c, r] = 1;
-            }
-
-            Righe = Righe + Colonne;
-
-            EliminazioneGaussiana();
-
-            int[] v = ColonneDipendenti();
-            List<int[]> risultato = new List<int[]>();
-            foreach (int c in v)
-            {
-                int[] colonna = new int[Colonne];
-                for (int r = 0; r < Colonne; r++)
+                righe.Add(new List<int>());
+                for (int c = 0; c < mat.Colonne; c++)
                 {
-                    colonna[r] = this[c, r];
+                    mat[c, r] = this[c, righePiene[r]];
+                    righe[r].Add(mat[c, r]);
                 }
-
-                risultato.Add(colonna);
             }
-            
+
+            for (int r = mat.Righe - 1; r >= 0; r--)
+            {
+                if (r == mat.Righe - 1)
+                {
+                    List<int> indiciCon1 = new List<int>();
+                    for (int k = 0; k < mat.Colonne; k++)
+                    {
+                        if (righe[r][k] == 1)
+                            indiciCon1.Add(k);
+                    }
+
+                    if (indiciCon1.Count % 2 != 0)
+                    {
+                        int random = Tools.RandomDaLista(indiciCon1);
+                        risultato[random] = 0;
+                        indiciCon1.Remove(random);
+                    }
+
+                    foreach (int k in indiciCon1)
+                    {
+                        risultato[k] = 1;
+                    }
+                }
+                else
+                {
+                    List<int> indiciBloccati = new List<int>();
+                    List<int> indiciCon1 = new List<int>();
+
+                    for (int i = 0; i < mat.Colonne; i++)
+                    {
+                        if (righe[r][i] == 1 && risultato[i] == 1)
+                            indiciBloccati.Add(i);
+
+                        if (righe[r][i] == 1)
+                            indiciCon1.Add(i);
+                    }
+
+                    List<int> indiciUtilizzabili = indiciCon1.Except(indiciBloccati).ToList();
+                    int s = indiciBloccati.Count % 2;
+                    List<int> valori = Tools.RandomListaConSommaMod2(indiciUtilizzabili.Count, s);
+                    int k = 0;
+                    foreach (int index in indiciUtilizzabili)
+                    {
+                        risultato[index] = valori[k];
+                        k++;
+                    }
+
+
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(mat);
+
             return risultato;
         }
 
-        private int[] ColonneDipendenti()
-        {
-            List<int> risultato = new List<int>();
-            for (int c = 0; c < Colonne; c++)
-            {
-                List<int> colonna = new List<int>();
-                for (int r = 0; r < Righe; r++)
-                {
-                    colonna.Add(this[c, r]);
-                }
-                if (colonna.FindAll(n => n == 1).Count > 1)
-                    risultato.Add(c);
-            }
-            return risultato.ToArray();
-        }
         public override string ToString()
         {
             string s = "";
@@ -160,5 +201,104 @@ namespace Fattorizzazione.Utilities
             }
             return s;
         }
+
+
+
+        #region scarto
+        //public List<int[]> Kernel1()
+        //{
+        //    //EliminazioneGaussiana();
+        //    BMatrice mat = new BMatrice(this);
+        //    Valori = new int[Colonne, Righe + Colonne];
+        //    for (int r = 0; r < Righe; r++)
+        //    {
+        //        for (int c = 0; c < Colonne; c++)
+        //        {
+        //            this[c, r] = mat[c, r];
+        //        }
+        //    }
+
+        //    for (int r = Righe, c = 0; c < Colonne; r++, c++)
+        //    {
+        //        this[c, r] = 1;
+        //    }
+
+        //    Righe = Righe + Colonne;
+
+        //    EliminazioneGaussiana();
+
+        //    int[] v = ColonneDipendenti();
+        //    List<int[]> risultato = new List<int[]>();
+        //    foreach (int c in v)
+        //    {
+        //        int[] colonna = new int[Colonne];
+        //        for (int r = 0; r < Colonne; r++)
+        //        {
+        //            colonna[r] = this[c, r];
+        //        }
+
+        //        risultato.Add(colonna);
+        //    }
+
+        //    return risultato;
+        //}
+
+        //public List<int[]> Kernel2()
+        //{
+        //    //EliminazioneGaussiana();
+        //    BMatrice mat = new BMatrice(this);
+        //    Valori = new int[Colonne + Righe, Righe];
+        //    for (int r = 0; r < Righe; r++)
+        //    {
+        //        for (int c = 0; c < Colonne; c++)
+        //        {
+        //            this[c, r] = mat[c, r];
+        //        }
+        //    }
+
+        //    Colonne = Righe + Colonne;
+
+        //    for (int r = 0, c = Colonne; c < Righe; r++, c++)
+        //    {
+        //        this[c, r] = 1;
+        //    }
+
+
+
+        //    EliminazioneGaussiana();
+
+        //    //int[] v = ColonneDipendenti();
+        //    List<int[]> risultato = new List<int[]>();
+        //    //foreach (int c in v)
+        //    //{
+        //    //    int[] colonna = new int[mat.Colonne];
+        //    //    for (int r = 0; r < mat.Colonne; r++)
+        //    //    {
+        //    //        colonna[r] = this[c, r];
+        //    //    }
+
+        //    //    risultato.Add(colonna);
+        //    //}
+
+        //    return risultato;
+        //}
+
+
+        //private int[] ColonneDipendenti()
+        //{
+        //    List<int> risultato = new List<int>();
+        //    for (int c = 0; c < Colonne; c++)
+        //    {
+        //        List<int> colonna = new List<int>();
+        //        for (int r = 0; r < Righe; r++)
+        //        {
+        //            colonna.Add(this[c, r]);
+        //        }
+        //        if (colonna.FindAll(n => n == 1).Count > 1)
+        //            risultato.Add(c);
+        //    }
+        //    return risultato.ToArray();
+        //}
+        #endregion
     }
 }

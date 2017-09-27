@@ -109,6 +109,65 @@ namespace Fattorizzazione.Utilities
             return longRand % (max - min) + min;
         }
 
+        public static T RandomDaLista<T>(List<T> lista)
+        {
+            Random rand = new Random();
+            int index = rand.Next(lista.Count);
+            return lista[index];
+        }
+
+        public static List<int> RandomListaConSommaMod2(int n_elementi, int s)
+        {
+            List<int> lista = new List<int>();
+
+            if(s == 0)
+            {
+                int pow = (int)Math.Pow(2, n_elementi);
+                Random rand = new Random();
+                int r = rand.Next(pow);
+                r = r % 2 == 0 ? r : r - 1;
+                List<int> indexCon1 = new List<int>();
+                for (int i = n_elementi - 1; i >= 0; i--)
+                {
+                    int k = r >> i;
+                    lista.Add(k % 2);
+                    if (k % 2 == 1)
+                        indexCon1.Add(lista.Count - 1);
+                }
+
+                if(indexCon1.Count % 2 != 0)
+                {
+                    int index = RandomDaLista(indexCon1);
+                    lista[index] = 0;
+                }
+            }
+            else
+            {
+                int pow = (int)Math.Pow(2, n_elementi);
+                Random rand = new Random();
+                int r = rand.Next(pow);
+                r = r % 2 == 1 ? r : r + 1;
+                List<int> indexCon1 = new List<int>();
+                for (int i = n_elementi - 1; i >= 0; i--)
+                {
+                    int k = r >> i;
+                    lista.Add(k % 2);
+                    if (k % 2 == 1)
+                        indexCon1.Add(lista.Count - 1);
+                }
+
+                if (indexCon1.Count % 2 == 0)
+                {
+                    int index = RandomDaLista(indexCon1);
+                    lista[index] = 0;
+                }
+
+
+            }
+            lista = lista.OrderBy(g => Guid.NewGuid()).ToList();
+            return lista;
+        }
+
         public static long ModInverse(long a, long n)
         {
             return new BigInteger(a).modInverse(new BigInteger(n)).LongValue();
