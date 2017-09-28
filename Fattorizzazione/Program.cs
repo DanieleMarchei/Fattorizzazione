@@ -13,8 +13,9 @@ namespace Fattorizzazione
         static void Main(string[] args)
         {
             IAlgoritmo algo = new CrivelloQuadratico();
-            List<long> fattori = algo.Fattorizza(87463); //3937
+            List<long> fattori = algo.Fattorizza(3937);
             Utility.StampaASchermo(fattori);
+
             Console.Read();
         }
     }

@@ -12,6 +12,12 @@ namespace Fattorizzazione.Models
         public List<long> Fattorizza(long n)
         {
             List<long> fattori = new List<long>();
+            if(new BigInteger(n).isProbablePrime())
+            {
+                fattori.Add(n);
+                return fattori;
+            }
+                
 
             #region SETUP
 
@@ -74,13 +80,12 @@ namespace Fattorizzazione.Models
 
             vectorBase.Sort();
             int c = 0, r = 0;
-
             foreach (long p in vectorBase)
             {
                 foreach (Triple tr in triple)
                 {                    
-                    tr.Factors = Tools.VettoreEsponentiModN(tr.Factors, 2);
-                    if (tr.Factors.Contains(p))
+                    temp = Tools.VettoreEsponentiModN(tr.Factors, 2);
+                    if (temp.Contains(p))
                         matrice[c, r] = 1;
                     c++;
                 }
@@ -90,10 +95,26 @@ namespace Fattorizzazione.Models
 
             matrice.EliminazioneGaussiana();
 
-            long X = 1, Y = 1;
+            BigInteger X = 1, Y = 1;
             while(X == Y)
             {
+                X = 1;
+                Y = 1;
                 int[] v = matrice.SoluzioneRandom();
+
+                bool soloZeri = v.Count(k => k == 1) == 0;
+                if (soloZeri)
+                {
+                    for (int _ = 0; _ < 100 && soloZeri; _++)
+                    {
+                        v = matrice.SoluzioneRandom();
+                        soloZeri = v.Count(k => k == 1) == 0;
+                    }
+                    
+                    if(soloZeri)
+                        break;
+                }
+                    
 
                 List<Triple> tripleScelte = triple.Zip(v, (tr, k) => k == 1 ? tr : null).ToList();
                 tripleScelte.RemoveAll(tr => tr == null);
@@ -106,11 +127,11 @@ namespace Fattorizzazione.Models
 
                 X = X % n;
 
-                Y = (long)Math.Round(Math.Sqrt(Y)) % n;
+                Y = Y.sqrt() % n;
             }
             
 
-            long fatt1 = Tools.GCD(X + Y, n);
+            long fatt1 = Tools.GCD((X + Y).LongValue(), n);
             long fatt2 = n / fatt1;
 
             if (fatt1 <= 1 || fatt2 <= 1)

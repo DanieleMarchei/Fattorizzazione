@@ -133,57 +133,32 @@ namespace Fattorizzazione.Utilities
 
             for (int r = mat.Righe - 1; r >= 0; r--)
             {
-                if (r == mat.Righe - 1)
+                List<int> indiciBloccati = new List<int>();
+                List<int> indiciCon1 = new List<int>();
+
+                for (int i = 0; i < mat.Colonne; i++)
                 {
-                    List<int> indiciCon1 = new List<int>();
-                    for (int k = 0; k < mat.Colonne; k++)
-                    {
-                        if (righe[r][k] == 1)
-                            indiciCon1.Add(k);
-                    }
+                    if (righe[r][i] == 1 && risultato[i] != -1)
+                        indiciBloccati.Add(i);
 
-                    if (indiciCon1.Count % 2 != 0)
-                    {
-                        int random = Tools.RandomDaLista(indiciCon1);
-                        risultato[random] = 0;
-                        indiciCon1.Remove(random);
-                    }
-
-                    foreach (int k in indiciCon1)
-                    {
-                        risultato[k] = 1;
-                    }
+                    if (righe[r][i] == 1)
+                        indiciCon1.Add(i);
                 }
-                else
+
+                List<int> indiciUtilizzabili = indiciCon1.Except(indiciBloccati).ToList();
+                int s = 0;
+                foreach (int bloccato in indiciBloccati)
                 {
-                    List<int> indiciBloccati = new List<int>();
-                    List<int> indiciCon1 = new List<int>();
-
-                    for (int i = 0; i < mat.Colonne; i++)
-                    {
-                        if (righe[r][i] == 1 && risultato[i] == 1)
-                            indiciBloccati.Add(i);
-
-                        if (righe[r][i] == 1)
-                            indiciCon1.Add(i);
-                    }
-
-                    List<int> indiciUtilizzabili = indiciCon1.Except(indiciBloccati).ToList();
-                    int s = indiciBloccati.Count % 2;
-                    List<int> valori = Tools.RandomListaConSommaMod2(indiciUtilizzabili.Count, s);
-                    int k = 0;
-                    foreach (int index in indiciUtilizzabili)
-                    {
-                        risultato[index] = valori[k];
-                        k++;
-                    }
-
-
+                    s = (s + risultato[bloccato]) % 2;
+                }
+                List<int> valori = Tools.RandomListaConSommaMod2(indiciUtilizzabili.Count, s);
+                int k = 0;
+                foreach (int index in indiciUtilizzabili)
+                {
+                    risultato[index] = valori[k];
+                    k++;
                 }
             }
-
-            Console.WriteLine();
-            Console.WriteLine(mat);
 
             return risultato;
         }

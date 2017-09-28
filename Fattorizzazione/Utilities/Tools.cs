@@ -113,6 +113,7 @@ namespace Fattorizzazione.Utilities
         {
             Random rand = new Random();
             int index = rand.Next(lista.Count);
+            
             return lista[index];
         }
 
@@ -125,20 +126,36 @@ namespace Fattorizzazione.Utilities
                 int pow = (int)Math.Pow(2, n_elementi);
                 Random rand = new Random();
                 int r = rand.Next(pow);
-                r = r % 2 == 0 ? r : r - 1;
+               
                 List<int> indexCon1 = new List<int>();
+                List<int> indexCon0 = new List<int>();
                 for (int i = n_elementi - 1; i >= 0; i--)
                 {
                     int k = r >> i;
                     lista.Add(k % 2);
                     if (k % 2 == 1)
                         indexCon1.Add(lista.Count - 1);
+                    else
+                        indexCon0.Add(lista.Count - 1);
                 }
 
-                if(indexCon1.Count % 2 != 0)
+                int zero = rand.Next(2);
+                if (indexCon0.Count == 0 || indexCon1.Count == 0)
+                    zero = indexCon0.Count == 0 ? 1 : 0;
+                if (indexCon1.Count % 2 != 0)
                 {
-                    int index = RandomDaLista(indexCon1);
-                    lista[index] = 0;
+                    int index = 0;
+                    if(zero == 0)
+                    {
+                        index = RandomDaLista(indexCon0);
+                        lista[index] = 1;
+                    }
+                    else
+                    {
+                        index = RandomDaLista(indexCon1);
+                        lista[index] = 0;
+                    }
+                        
                 }
             }
             else
@@ -146,23 +163,38 @@ namespace Fattorizzazione.Utilities
                 int pow = (int)Math.Pow(2, n_elementi);
                 Random rand = new Random();
                 int r = rand.Next(pow);
-                r = r % 2 == 1 ? r : r + 1;
+
                 List<int> indexCon1 = new List<int>();
+                List<int> indexCon0 = new List<int>();
                 for (int i = n_elementi - 1; i >= 0; i--)
                 {
                     int k = r >> i;
                     lista.Add(k % 2);
                     if (k % 2 == 1)
                         indexCon1.Add(lista.Count - 1);
+                    else
+                        indexCon0.Add(lista.Count - 1);
                 }
+
+                int zero = rand.Next(2);
+                if (indexCon0.Count == 0 || indexCon1.Count == 0)
+                    zero = indexCon0.Count == 0 ? 1 : 0;
 
                 if (indexCon1.Count % 2 == 0)
                 {
-                    int index = RandomDaLista(indexCon1);
-                    lista[index] = 0;
+                    int index = 0;
+                    if (zero == 0)
+                    {
+                        index = RandomDaLista(indexCon0);
+                        lista[index] = 1;
+                    }
+                    else
+                    {
+                        index = RandomDaLista(indexCon1);
+                        lista[index] = 0;
+                    }
+
                 }
-
-
             }
             lista = lista.OrderBy(g => Guid.NewGuid()).ToList();
             return lista;
