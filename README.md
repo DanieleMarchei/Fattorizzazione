@@ -22,8 +22,10 @@ new MetodoACurveEllittiche();
 ```cs 
 new CrivelloQuadratico();
 ```
-- Crivello dei campi di numeri generale **TODO**
-
+- Crivello dei campi di numeri **TODO**
+```cs 
+new CrivelloDeiCampiDiNumeri();
+```
 ### Come usare la libreria
 
 ```cs
