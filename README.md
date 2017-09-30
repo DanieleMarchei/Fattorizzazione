@@ -18,13 +18,18 @@ new Shor();
 ```cs 
 new MetodoACurveEllittiche();
 ```
-- Crivello quadratico **TODO**
-- Crivello dei campi di numeri generale **TODO**
-
+- Crivello quadratico
+```cs 
+new CrivelloQuadratico();
+```
+- Crivello dei campi di numeri **TODO**
+```cs 
+new CrivelloDeiCampiDiNumeri();
+```
 ### Come usare la libreria
 
 ```cs
-IAlgoritmo algo = new MetodoACurveEllittiche();
+IAlgoritmo algo = new CrivelloDiEratostene();
 List<ulong> fattori = algo.Fattorizza(42);
 Utility.StampaASchermo(fattori);
 ```
