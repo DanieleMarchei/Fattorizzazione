@@ -30,7 +30,7 @@ new CrivelloDeiCampiDiNumeri();
 
 ```cs
 IAlgoritmo algo = new CrivelloDiEratostene();
-List<ulong> fattori = algo.Fattorizza(42);
+List<long> fattori = algo.Fattorizza(42);
 Utility.StampaASchermo(fattori);
 ```
 
@@ -39,5 +39,5 @@ Utility.StampaASchermo(fattori);
 
 ### Librerie utilizzate
 - BigInteger [https://github.com/bazzilic/BigInteger](https://github.com/bazzilic/BigInteger)
-
+- PolyLib [https://www.codeproject.com/Articles/19446/A-C-Class-for-Complex-Polynomials](https://www.codeproject.com/Articles/19446/A-C-Class-for-Complex-Polynomials)
 
