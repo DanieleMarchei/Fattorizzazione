@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Fattorizzazione.Estensioni;
 using Fattorizzazione.Utilities;
 
 namespace Fattorizzazione.Models
 {
     class CrivelloQuadratico : IAlgoritmo
     {
+        private string nomeAlgoritmo = "Crivello Quadratico";
+
+        public string NomeAlgoritmo { get => nomeAlgoritmo; set => nomeAlgoritmo = value; }
+
         public List<long> Fattorizza(long n)
         {
             List<long> fattori = new List<long>();
-            if(new BigInteger(n).isProbablePrime())
-            {
-                fattori.Add(n);
-                return fattori;
-            }
+            //if(new BigInteger(n).isProbablePrime())
+            //{
+            //    fattori.Add(n);
+            //    return fattori;
+            //}
                 
 
             #region SETUP
@@ -100,7 +106,7 @@ namespace Fattorizzazione.Models
             {
                 X = 1;
                 Y = 1;
-                int[] v = matrice.SoluzioneRandom();
+                long[] v = matrice.SoluzioneRandom();
 
                 bool soloZeri = v.Count(k => k == 1) == 0;
                 if (soloZeri)
@@ -127,11 +133,10 @@ namespace Fattorizzazione.Models
 
                 X = X % n;
 
-                Y = Y.sqrt() % n;
+                Y = Y.Sqrt() % n;
             }
-            
-
-            long fatt1 = Tools.GCD((X + Y).LongValue(), n);
+             
+            long fatt1 = (long)Tools.GCD((long)(X + Y), n);
             long fatt2 = n / fatt1;
 
             if (fatt1 <= 1 || fatt2 <= 1)
@@ -143,11 +148,6 @@ namespace Fattorizzazione.Models
             }
 
             return fattori;
-        }
-
-        public string NomeAlgoritmo()
-        {
-            return "Crivello Quadratico";
         }
 
         private class Triple

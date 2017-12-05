@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Fattorizzazione.Estensioni;
 using Fattorizzazione.Models;
 
 namespace Fattorizzazione.Utilities
@@ -14,7 +16,7 @@ namespace Fattorizzazione.Utilities
             BigInteger big_n = new BigInteger(n);
             BigInteger big_g = new BigInteger(g);
             BigInteger big_h = new BigInteger(h);
-            BigInteger m = big_n.sqrt() + 1;
+            BigInteger m = big_n.Sqrt() + 1;
 
             Dictionary<long, long> table = new Dictionary<long, long>();
 
@@ -22,22 +24,23 @@ namespace Fattorizzazione.Utilities
 
             for (long i = 0; i <= m; i++)
             {
-                temp = (long)new BigInteger(g).modPow(new BigInteger(i), new BigInteger(n)).LongValue();
+                temp = (long)BigInteger.ModPow(new BigInteger(g), new BigInteger(i), new BigInteger(n));
                 if (!table.ContainsKey(temp))
                     table.Add(temp, i);
             }
-            BigInteger inverse = big_g.modInverse(n).LongValue();
-            BigInteger inverse2 = inverse.modPow(m, n);
+            
+            BigInteger inverse = BigInteger.ModPow(big_g, n - 2, n);
+            BigInteger inverse2 = BigInteger.ModPow(inverse, m, n);
 
             long hg = 0;
             for (long i = 0; i <= m; i++)
             {
-                hg = ((big_h * inverse2.modPow(new BigInteger(i), n)) % n).LongValue();
+                hg = (long)((big_h * BigInteger.ModPow(inverse2, new BigInteger(i), n)) % n);
                 try
                 {
                     long any = table[hg];
                     if ((i * m + any) != 0)
-                        return i * m.LongValue() + any;
+                        return i * (long)m + any;
                 }
                 catch (KeyNotFoundException e)
                 {
@@ -74,9 +77,27 @@ namespace Fattorizzazione.Utilities
             else return n * Fattoriale(n - 1);
         }
 
-        public static long GCD(long a, long b)
+        public static BigInteger GCD(long a, long b)
         {
-            return new BigInteger(a).gcd(new BigInteger(b)).LongValue();
+            return BigInteger.GreatestCommonDivisor(a, b);
+        }
+
+        public static BigInteger[] EGCD(long x, long y)
+        {
+            BigInteger a = 1, b = 0, g = x, u = 0, v = 1, w = y;
+            while(w > 0)
+            {
+                BigInteger q = g / w;
+                a = u; b = v; g = w; u = a - q*u; v = b - q* v; w = g - q * w;
+            }
+
+            BigInteger[] ris = new BigInteger[3];
+            ris[0] = a;
+            ris[1] = b;
+            ris[2] = g;
+            return ris;
+
+
         }
 
         public static List<long> ListaNumeriPrimi(long B)
@@ -99,6 +120,31 @@ namespace Fattorizzazione.Utilities
             return risultato;
         }
 
+        public static List<long> ProssimiKPrimi(long B, long k)
+        {
+            List<long> risultato = new List<long>();
+            BigInteger n = new BigInteger(B + 1);
+            while(risultato.Count < k)
+            {
+                if (n.IsProbablyPrime())
+                    risultato.Add((long)n);
+
+                n++;
+            }
+
+            return risultato;
+        }
+
+        public static long  ProssimoPrimo(long p)
+        {
+            BigInteger nextP = p + 1;
+            while (!nextP.IsProbablyPrime())
+            {
+                nextP++;
+            }
+            return (long)nextP;
+        }
+
         public static long Randomlong(long min, long max)
         {
             Random rand = new Random();
@@ -117,7 +163,7 @@ namespace Fattorizzazione.Utilities
             return lista[index];
         }
 
-        public static List<int> RandomListaConSommaMod2(int n_elementi, int s)
+        public static List<int> RandomListaConSommaMod2(long n_elementi, long s)
         {
             List<int> lista = new List<int>();
 
@@ -129,7 +175,7 @@ namespace Fattorizzazione.Utilities
                
                 List<int> indexCon1 = new List<int>();
                 List<int> indexCon0 = new List<int>();
-                for (int i = n_elementi - 1; i >= 0; i--)
+                for (int i = (int)(n_elementi - 1); i >= 0; i--)
                 {
                     int k = r >> i;
                     lista.Add(k % 2);
@@ -166,7 +212,7 @@ namespace Fattorizzazione.Utilities
 
                 List<int> indexCon1 = new List<int>();
                 List<int> indexCon0 = new List<int>();
-                for (int i = n_elementi - 1; i >= 0; i--)
+                for (int i = (int)(n_elementi - 1); i >= 0; i--)
                 {
                     int k = r >> i;
                     lista.Add(k % 2);
@@ -202,7 +248,12 @@ namespace Fattorizzazione.Utilities
 
         public static long ModInverse(long a, long n)
         {
-            return new BigInteger(a).modInverse(new BigInteger(n)).LongValue();
+            BigInteger[] egcd = EGCD(a, n);
+            BigInteger x = egcd[0], y = egcd[1], g = egcd[2];
+            if (g != 1)
+                throw new Exception("Non esiste l' inverso");
+            else
+                return (long)x % n;
         }
 
         public static int Legendre(long a, long p)

@@ -10,6 +10,6 @@ namespace Fattorizzazione.Models
     {
         List<long> Fattorizza(long n);
 
-        string NomeAlgoritmo();
+        string NomeAlgoritmo { get; }
     }
 }

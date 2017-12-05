@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Fattorizzazione.Utilities;
 
 namespace Fattorizzazione.Models
 {
     public class Shor : IAlgoritmo
     {
+        private string nomeAlgoritmo = "Algoritmo di Shor"; 
+
+        public string NomeAlgoritmo { get => nomeAlgoritmo; set => nomeAlgoritmo = value; }
+
         public List<long> Fattorizza(long n)
         {
             List<long> fattori = new List<long>();
@@ -30,21 +35,20 @@ namespace Fattorizzazione.Models
             do
             {
                 a = (long)(rand.NextDouble() * (n-2))+2;
-                if (new BigInteger(a).gcd(n) != 1) continue;
+                if (Tools.GCD(a,n) != 1) continue;
 
                 r = Tools.DiscreteLog(a, 1, n);
 
                 exit = r % 2 == 0;
                 if(exit)
                 {
-                    pow = (long)new BigInteger(a).modPow(r / 2, n).LongValue();
+                    pow = (long)BigInteger.ModPow(a, r / 2, n);
                     exit &= (pow + 1) % n != 0;
                 }
                 
             } while (!exit);
 
-            BigInteger big_n = new BigInteger(n);
-            long p = (long)new BigInteger(pow - 1).gcd(big_n).LongValue();
+            long p = (long)Tools.GCD(pow - 1, n);
             long q = n / p;
 
             if (p <= 1 || q <= 1)
@@ -62,9 +66,5 @@ namespace Fattorizzazione.Models
             return fattori;
         }
 
-        public string NomeAlgoritmo()
-        {
-            return "Algoritmo di Shor";
-        }
     }
 }

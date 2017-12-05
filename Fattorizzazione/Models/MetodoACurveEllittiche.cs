@@ -9,6 +9,10 @@ namespace Fattorizzazione.Models
 {
     class MetodoACurveEllittiche : IAlgoritmo
     {
+        private string nomeAlgoritmo = "Metodo a Curve Ellittiche";
+
+        public string NomeAlgoritmo { get => nomeAlgoritmo; set => nomeAlgoritmo = value; }
+
         public List<long> Fattorizza(long n)
         {
             List<long> fattori = new List<long>();
@@ -39,8 +43,8 @@ namespace Fattorizzazione.Models
             long A = 0, x = 0, y = 0, B = 0;
             long singulatity;
 
-            long gcd = 1;
-            while(gcd == 1)
+            long gcd = n;
+            while(gcd == n)
             {
                 A = Tools.Randomlong(0, n);
                 x = Tools.Randomlong(0, n);
@@ -50,7 +54,7 @@ namespace Fattorizzazione.Models
 
                 singulatity = 4 * A * A * A + 27 * B * B;
 
-                gcd = Tools.GCD(singulatity, n);
+                gcd = (long)Tools.GCD(singulatity, n);
             }
 
             CurvaEllittica curva = new CurvaEllittica(A, B, n);
@@ -74,7 +78,7 @@ namespace Fattorizzazione.Models
                     {
                         denom = (p.X - startP.X) % n;
                     }
-                    long fattore1 = Tools.GCD(denom, n);
+                    long fattore1 = (long)Tools.GCD(denom, n);
                     long fattore2 = n / fattore1;
                     if(fattore1 == 1 || fattore2 == 1)
                         fattori.Add(n);
@@ -91,11 +95,6 @@ namespace Fattorizzazione.Models
 
             fattori.Add(n);
             return fattori;
-        }
-
-        public string NomeAlgoritmo()
-        {
-            return "Metodo a curve ellittiche";
         }
     }
 }

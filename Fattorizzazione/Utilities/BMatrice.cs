@@ -8,32 +8,32 @@ namespace Fattorizzazione.Utilities
 {
     public class BMatrice
     {
-        public int Righe { get; private set; }
-        public int Colonne { get; private set; }
-        private int[,] Valori;
+        public long Righe { get; private set; }
+        public long Colonne { get; private set; }
+        private long[,] Valori;
 
-        public BMatrice(int colonne, int righe)
+        public BMatrice(long colonne, long righe)
         {
             Righe = righe;
             Colonne = colonne;
-            Valori = new int[colonne, righe];
+            Valori = new long[colonne, righe];
         }
 
         public BMatrice(BMatrice mat)
         {
-            Valori = new int[mat.Colonne, mat.Righe];
+            Valori = new long[mat.Colonne, mat.Righe];
             Colonne = mat.Colonne;
             Righe = mat.Righe;
-            for (int r = 0; r < Righe; r++)
+            for (long r = 0; r < Righe; r++)
             {
-                for (int c = 0; c < Colonne; c++)
+                for (long c = 0; c < Colonne; c++)
                 {
                     this[c, r] = mat[c, r];
                 }
             }
         }
 
-        public int this[int colonna, int riga]
+        public long this[long colonna, long riga]
         {
             get
             {
@@ -45,24 +45,24 @@ namespace Fattorizzazione.Utilities
             }
         }
 
-        private void ScambiaRighe(int r1, int r2)
+        private void ScambiaRighe(long r1, long r2)
         {
-            int[] tempR = new int[Colonne];
-            for (int i = 0; i < Colonne; i++)
+            long[] tempR = new long[Colonne];
+            for (long i = 0; i < Colonne; i++)
             {
                 tempR[i] = this[i, r1];
                 this[i, r1] = this[i, r2];
             }
 
-            for (int i = 0; i < Colonne; i++)
+            for (long i = 0; i < Colonne; i++)
             {
                 this[i, r2] = tempR[i];
             }
         }
 
-        private void SommaRighe(int r1, int r2)
+        private void SommaRighe(long r1, long r2)
         {
-            for (int c = 0; c < Colonne; c++)
+            for (long c = 0; c < Colonne; c++)
             {
                 this[c, r2] += this[c, r1];
             }
@@ -70,10 +70,10 @@ namespace Fattorizzazione.Utilities
 
         public void EliminazioneGaussiana()
         {
-            for (int c = 0; c < Math.Min(Colonne, Righe); c++)
+            for (long c = 0; c < Math.Min(Colonne, Righe); c++)
             {
-                List<int> righeCon1 = new List<int>();
-                for (int r = c; r < Righe; r++)
+                List<long> righeCon1 = new List<long>();
+                for (long r = c; r < Righe; r++)
                 {
                     if (this[c, r] == 1)
                         righeCon1.Add(r);
@@ -81,10 +81,10 @@ namespace Fattorizzazione.Utilities
 
                 if (righeCon1.Count > 0)
                 {
-                    int prima = c;
+                    long prima = c;
                     ScambiaRighe(righeCon1[0], c);
                     righeCon1.Remove(righeCon1[0]);
-                    foreach (int riga in righeCon1)
+                    foreach (long riga in righeCon1)
                     {
                         SommaRighe(prima, riga);
                     }
@@ -92,21 +92,21 @@ namespace Fattorizzazione.Utilities
             }
         }
 
-        public int[] SoluzioneRandom()
+        public long[] SoluzioneRandom()
         {
-            int[] risultato = new int[Colonne];
-            for (int i = 0; i < risultato.Length; i++)
+            long[] risultato = new long[Colonne];
+            for (long i = 0; i < risultato.Length; i++)
             {
                 risultato[i] = -1;
             }
 
             #region rimuovi_righe_vuote
 
-            List<int> righeVuote = new List<int>();
-            for (int r = 0; r < Righe; r++)
+            List<long> righeVuote = new List<long>();
+            for (long r = 0; r < Righe; r++)
             {
                 bool vuota = true;
-                for (int c = 0; c < Colonne; c++)
+                for (long c = 0; c < Colonne; c++)
                 {
                     vuota &= this[c, r] == 0;
                 }
@@ -116,46 +116,46 @@ namespace Fattorizzazione.Utilities
             }
 
             BMatrice mat = new BMatrice(Colonne, Righe - righeVuote.Count);
-            List<int> righePiene = Enumerable.Range(0, Righe).ToList();
+            List<long> righePiene = Enumerable.Range(0, (int)Righe).ToList().ConvertAll(x => (long)x);
             righePiene.RemoveAll(r => righeVuote.Contains(r));
             #endregion
 
-            List<List<int>> righe = new List<List<int>>();
-            for (int r = 0; r < mat.Righe; r++)
+            List<List<long>> righe = new List<List<long>>();
+            for (long r = 0; r < mat.Righe; r++)
             {
-                righe.Add(new List<int>());
-                for (int c = 0; c < mat.Colonne; c++)
+                righe.Add(new List<long>());
+                for (long c = 0; c < mat.Colonne; c++)
                 {
-                    mat[c, r] = this[c, righePiene[r]];
-                    righe[r].Add(mat[c, r]);
+                    mat[c, r] = this[c, righePiene[(int)r]];
+                    righe[(int)r].Add(mat[c, r]);
                 }
             }
 
-            for (int r = mat.Righe - 1; r >= 0; r--)
+            for (long r = mat.Righe - 1; r >= 0; r--)
             {
-                List<int> indiciBloccati = new List<int>();
-                List<int> indiciCon1 = new List<int>();
+                List<long> indiciBloccati = new List<long>();
+                List<long> indiciCon1 = new List<long>();
 
-                for (int i = 0; i < mat.Colonne; i++)
+                for (long i = 0; i < mat.Colonne; i++)
                 {
-                    if (righe[r][i] == 1 && risultato[i] != -1)
+                    if (righe[(int)r][(int)i] == 1 && risultato[i] != -1)
                         indiciBloccati.Add(i);
 
-                    if (righe[r][i] == 1)
+                    if (righe[(int)r][(int)i] == 1)
                         indiciCon1.Add(i);
                 }
 
-                List<int> indiciUtilizzabili = indiciCon1.Except(indiciBloccati).ToList();
-                int s = 0;
-                foreach (int bloccato in indiciBloccati)
+                List<long> indiciUtilizzabili = indiciCon1.Except(indiciBloccati).ToList();
+                long s = 0;
+                foreach (long bloccato in indiciBloccati)
                 {
                     s = (s + risultato[bloccato]) % 2;
                 }
-                List<int> valori = Tools.RandomListaConSommaMod2(indiciUtilizzabili.Count, s);
-                int k = 0;
-                foreach (int index in indiciUtilizzabili)
+                List<long> valori = Tools.RandomListaConSommaMod2(indiciUtilizzabili.Count, s).ConvertAll(x=>(long)x);
+                long k = 0;
+                foreach (long index in indiciUtilizzabili)
                 {
-                    risultato[index] = valori[k];
+                    risultato[index] = valori[(int)k];
                     k++;
                 }
             }
@@ -166,9 +166,9 @@ namespace Fattorizzazione.Utilities
         public override string ToString()
         {
             string s = "";
-            for (int i = 0; i < Righe; i++)
+            for (long i = 0; i < Righe; i++)
             {
-                for (int k = 0; k < Colonne; k++)
+                for (long k = 0; k < Colonne; k++)
                 {
                     s += this[k, i] + " ";
                 }
@@ -180,20 +180,20 @@ namespace Fattorizzazione.Utilities
 
 
         #region scarto
-        //public List<int[]> Kernel1()
+        //public List<long[]> Kernel1()
         //{
         //    //EliminazioneGaussiana();
         //    BMatrice mat = new BMatrice(this);
-        //    Valori = new int[Colonne, Righe + Colonne];
-        //    for (int r = 0; r < Righe; r++)
+        //    Valori = new long[Colonne, Righe + Colonne];
+        //    for (long r = 0; r < Righe; r++)
         //    {
-        //        for (int c = 0; c < Colonne; c++)
+        //        for (long c = 0; c < Colonne; c++)
         //        {
         //            this[c, r] = mat[c, r];
         //        }
         //    }
 
-        //    for (int r = Righe, c = 0; c < Colonne; r++, c++)
+        //    for (long r = Righe, c = 0; c < Colonne; r++, c++)
         //    {
         //        this[c, r] = 1;
         //    }
@@ -202,12 +202,12 @@ namespace Fattorizzazione.Utilities
 
         //    EliminazioneGaussiana();
 
-        //    int[] v = ColonneDipendenti();
-        //    List<int[]> risultato = new List<int[]>();
-        //    foreach (int c in v)
+        //    long[] v = ColonneDipendenti();
+        //    List<long[]> risultato = new List<long[]>();
+        //    foreach (long c in v)
         //    {
-        //        int[] colonna = new int[Colonne];
-        //        for (int r = 0; r < Colonne; r++)
+        //        long[] colonna = new long[Colonne];
+        //        for (long r = 0; r < Colonne; r++)
         //        {
         //            colonna[r] = this[c, r];
         //        }
@@ -218,14 +218,14 @@ namespace Fattorizzazione.Utilities
         //    return risultato;
         //}
 
-        //public List<int[]> Kernel2()
+        //public List<long[]> Kernel2()
         //{
         //    //EliminazioneGaussiana();
         //    BMatrice mat = new BMatrice(this);
-        //    Valori = new int[Colonne + Righe, Righe];
-        //    for (int r = 0; r < Righe; r++)
+        //    Valori = new long[Colonne + Righe, Righe];
+        //    for (long r = 0; r < Righe; r++)
         //    {
-        //        for (int c = 0; c < Colonne; c++)
+        //        for (long c = 0; c < Colonne; c++)
         //        {
         //            this[c, r] = mat[c, r];
         //        }
@@ -233,7 +233,7 @@ namespace Fattorizzazione.Utilities
 
         //    Colonne = Righe + Colonne;
 
-        //    for (int r = 0, c = Colonne; c < Righe; r++, c++)
+        //    for (long r = 0, c = Colonne; c < Righe; r++, c++)
         //    {
         //        this[c, r] = 1;
         //    }
@@ -242,12 +242,12 @@ namespace Fattorizzazione.Utilities
 
         //    EliminazioneGaussiana();
 
-        //    //int[] v = ColonneDipendenti();
-        //    List<int[]> risultato = new List<int[]>();
-        //    //foreach (int c in v)
+        //    //long[] v = ColonneDipendenti();
+        //    List<long[]> risultato = new List<long[]>();
+        //    //foreach (long c in v)
         //    //{
-        //    //    int[] colonna = new int[mat.Colonne];
-        //    //    for (int r = 0; r < mat.Colonne; r++)
+        //    //    long[] colonna = new long[mat.Colonne];
+        //    //    for (long r = 0; r < mat.Colonne; r++)
         //    //    {
         //    //        colonna[r] = this[c, r];
         //    //    }
@@ -259,13 +259,13 @@ namespace Fattorizzazione.Utilities
         //}
 
 
-        //private int[] ColonneDipendenti()
+        //private long[] ColonneDipendenti()
         //{
-        //    List<int> risultato = new List<int>();
-        //    for (int c = 0; c < Colonne; c++)
+        //    List<long> risultato = new List<long>();
+        //    for (long c = 0; c < Colonne; c++)
         //    {
-        //        List<int> colonna = new List<int>();
-        //        for (int r = 0; r < Righe; r++)
+        //        List<long> colonna = new List<long>();
+        //        for (long r = 0; r < Righe; r++)
         //        {
         //            colonna.Add(this[c, r]);
         //        }

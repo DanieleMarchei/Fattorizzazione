@@ -8,6 +8,10 @@ namespace Fattorizzazione.Models
 {
     public class CrivelloDiEratostene : IAlgoritmo
     {
+        private string nomeAlgoritmo = "Crivello di Eratostene";
+
+        public string NomeAlgoritmo { get => nomeAlgoritmo; set => nomeAlgoritmo = value; }
+
         public List<long> Fattorizza(long n)
         {
             List<long> fattori = new List<long>();
@@ -28,9 +32,5 @@ namespace Fattorizzazione.Models
             return fattori;
         }
 
-        public string NomeAlgoritmo()
-        {
-            return "Crivello di Eratostene";
-        }
     }
 }

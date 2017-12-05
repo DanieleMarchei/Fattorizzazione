@@ -9,6 +9,10 @@ namespace Fattorizzazione.Models
 {
     public class MetodoDiFermat : IAlgoritmo
     {
+        private string nomeAlgoritmo = "Metodo di Fermat";
+
+        public string NomeAlgoritmo { get => nomeAlgoritmo; set => nomeAlgoritmo = value; }
+
         public List<long> Fattorizza(long n)
         {
             
@@ -39,9 +43,5 @@ namespace Fattorizzazione.Models
             return fattori;
         }
 
-        public string NomeAlgoritmo()
-        {
-            return "Metodo di Fermat";
-        }
     }
 }

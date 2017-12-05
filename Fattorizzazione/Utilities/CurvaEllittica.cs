@@ -45,13 +45,13 @@ namespace Fattorizzazione.Utilities
 
             long inverseDenom = Tools.ModInverse(lambdaDenom, N);
             lambda = (lambdaNum * inverseDenom) % N;
-            long Xr = ((long)lambda * (long)lambda - (long)p.X - (long)q.X) % (long)N;
-            if (Xr < 0) Xr = (long)N + Xr;
+            long Xr = (lambda * lambda - p.X - q.X) % N;
+            if (Xr < 0) Xr = N + Xr;
 
-            long Yr = ((long)lambda * ((long)p.X - Xr) - (long)p.Y) % (long)N;
-            if (Yr < 0) Yr = (long)N + Yr;
+            long Yr = (lambda * (p.X - Xr) - p.Y) % N;
+            if (Yr < 0) Yr = N + Yr;
 
-            return new Punto((long)Xr, (long)Yr);
+            return new Punto(Xr, Yr);
         }
 
 
